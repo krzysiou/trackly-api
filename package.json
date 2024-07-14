@@ -1,17 +1,18 @@
 {
   "name": "trackly-api",
-  "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
-  "scripts": {
-    "build": "npx tsc",
-    "dev": "nodemon src/index.ts",
-    "start": "node dist/index.js",
-    "prepare": "husky"
-  },
   "author": "krzysiou",
   "license": "ISC",
   "description": "An API for Trackly platform. Designed to acts as both BFF for the platform and api for users.",
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "nodemon --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "npx eslint --cache",
+    "lint:fix": "npx eslint --fix",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky"
+  },
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.19.2"
