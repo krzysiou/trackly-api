@@ -1,5 +1,6 @@
 type Config = {
-  port: string;
+  readonly port: string;
+  readonly tokenSecret: string;
 };
 
 export type { Config };

@@ -3,24 +3,44 @@ import express from 'express';
 import type { Express, Request, Response } from 'express';
 
 import { withErrorHandler } from '../error-handler';
+import { assertBody } from '../../core/asserts/assert-body';
+import { generateAccessToken } from '../../core/access-token/generate-access-token';
+import { logUserIn } from '../../core/user/log-user-in';
+import { signUserIn } from '../../core/user/sign-user-in';
 
 const loginHandler = withErrorHandler(
   async (request: Request, response: Response) => {
-    response.send({ message: 'Login page' });
+    const { username, password } = assertBody(request.body, [
+      'username',
+      'password',
+    ]);
+
+    const user = await logUserIn(username, password);
+    const accessToken = generateAccessToken(user);
+
+    response.send({ accessToken });
   }
 );
 
 const registerHandler = withErrorHandler(
   async (request: Request, response: Response) => {
-    response.send({ message: 'Register page' });
+    const { username, password } = assertBody(request.body, [
+      'username',
+      'password',
+    ]);
+
+    const user = await signUserIn(username, password);
+    const accessToken = generateAccessToken(user);
+
+    response.send({ accessToken });
   }
 );
 
 const mountAuthorizationRoutes = (app: Express) => {
   const router = express();
 
-  router.get('/login', loginHandler);
-  router.get('/register', registerHandler);
+  router.post('/login', loginHandler);
+  router.post('/register', registerHandler);
 
   app.use(router);
 };

@@ -1,6 +1,10 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
-type RequestHandler = (request: Request, response: Response) => Promise<void>;
+type RequestHandler = (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => Promise<void>;
 
 const isError = (error: unknown): error is Error => error instanceof Error;
 
@@ -19,9 +23,9 @@ const isErrorWithCodeNumber = (
 
 const withErrorHandler =
   (handler: RequestHandler): RequestHandler =>
-  async (request, response) => {
+  async (request, response, next) => {
     try {
-      await handler(request, response);
+      await handler(request, response, next);
     } catch (error) {
       if (isErrorWithCode(error) && error.code === 'ERR_ASSERTION') {
         const message = `Assertion error: ${getErrorMessage(error)}`;
@@ -35,6 +39,14 @@ const withErrorHandler =
         const message = `NotFound error: ${getErrorMessage(error)}`;
 
         response.status(404).send({ message });
+
+        return;
+      }
+
+      if (isErrorWithCodeNumber(error) && error.code === 401) {
+        const message = `Unauthorized error: ${getErrorMessage(error)}`;
+
+        response.status(401).send({ message });
 
         return;
       }
