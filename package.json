@@ -7,9 +7,9 @@
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js"
   },
-  "author": "",
+  "author": "krzysiou",
   "license": "ISC",
-  "description": "",
+  "description": "An API for Trackly platform. Designed to acts as both BFF for the platform and api for users.",
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.19.2"
