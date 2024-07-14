@@ -5,6 +5,7 @@ import type { Express, Request, Response } from 'express';
 import { withErrorHandler } from '../error-handler';
 import { users } from '../../core/user/types';
 import { checkAccessToken } from '../../core/access-token/check-access-token';
+import { privateLimiter } from '../../core/limiters/private-limtier';
 
 const statusHandler = withErrorHandler(
   async (request: Request, response: Response) => {
@@ -23,7 +24,7 @@ const mountUtilityRoutes = (app: Express) => {
   const router = express();
 
   router.get('/status', statusHandler);
-  router.post('/users', checkAccessToken, usersHandler);
+  router.post('/users', privateLimiter, checkAccessToken, usersHandler);
 
   app.use(router);
 };

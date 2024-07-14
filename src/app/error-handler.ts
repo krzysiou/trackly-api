@@ -51,6 +51,14 @@ const withErrorHandler =
         return;
       }
 
+      if (isErrorWithCodeNumber(error) && error.code === 429) {
+        const message = `RateLimit error: ${getErrorMessage(error)}`;
+
+        response.status(429).send({ message });
+
+        return;
+      }
+
       const message = `Internal error: ${getErrorMessage(error)}`;
 
       response.status(500).send({ message });

@@ -7,6 +7,7 @@ import { assertBody } from '../../core/asserts/assert-body';
 import { generateAccessToken } from '../../core/access-token/generate-access-token';
 import { logUserIn } from '../../core/user/log-user-in';
 import { signUserIn } from '../../core/user/sign-user-in';
+import { publicLimiter } from '../../core/limiters/public-limiter';
 
 const loginHandler = withErrorHandler(
   async (request: Request, response: Response) => {
@@ -42,6 +43,7 @@ const mountAuthorizationRoutes = (app: Express) => {
   router.post('/login', loginHandler);
   router.post('/register', registerHandler);
 
+  app.use(publicLimiter);
   app.use(router);
 };
 
