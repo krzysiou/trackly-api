@@ -5,20 +5,9 @@ import type { AccessTokenPayload } from './types';
 
 import { getConfig } from '../../../config/config';
 import { withErrorHandler } from '../../app/error-handler';
+import { AuthorizationError } from '../errors/authorization-error';
 
 const { tokenSecret } = getConfig();
-
-type AuthorizationErrorBody = {
-  message: string;
-};
-
-class AuthorizationError extends Error {
-  public code: number = 401;
-
-  constructor(errorBody: AuthorizationErrorBody) {
-    super(errorBody.message);
-  }
-}
 
 const checkAccessToken = withErrorHandler(
   async (request: Request, response: Response, next: NextFunction) => {

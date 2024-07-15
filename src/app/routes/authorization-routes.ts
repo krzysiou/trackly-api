@@ -5,8 +5,8 @@ import type { Express, Request, Response } from 'express';
 import { withErrorHandler } from '../error-handler';
 import { assertBody } from '../../core/asserts/assert-body';
 import { generateAccessToken } from '../../core/access-token/generate-access-token';
-import { logUserIn } from '../../core/user/log-user-in';
-import { signUserIn } from '../../core/user/sign-user-in';
+import { logUserIn } from '../../core/authorization/log-user-in';
+import { signUserIn } from '../../core/authorization/sign-user-in';
 import { publicLimiter } from '../../core/limiters/public-limiter';
 
 const loginHandler = withErrorHandler(

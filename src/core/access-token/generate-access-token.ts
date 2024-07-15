@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken';
 
 import type { AccessTokenPayload } from './types';
-import type { User } from '../user/types';
+import type { User } from '../database/collections/users/types';
 
 import { getConfig } from '../../../config/config';
 

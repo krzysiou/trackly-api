@@ -1,12 +1,10 @@
 import { AssertionError } from 'assert';
 
-import type { User } from './types';
-
-import { users } from './types';
-import { validatePassword } from '../password/validate-password';
+import { validatePassword } from './password/validate-password';
+import { getfromUsers } from '../database/collections/users/get-from-users';
 
 const logUserIn = async (username: string, password: string) => {
-  const user = users.find((user) => user.username === username) as User;
+  const user = (await getfromUsers({ username }))[0];
 
   if (!user) {
     throw new AssertionError({

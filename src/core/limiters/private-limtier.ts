@@ -1,7 +1,7 @@
 import rateLimit from 'express-rate-limit';
 
 import { withErrorHandler } from '../../app/error-handler';
-import { RateLimitError } from './rate-limit-error';
+import { RateLimitError } from '../errors/rate-limit-error';
 import { getConfig } from '../../../config/config';
 
 const { disableRateLimit } = getConfig();
