@@ -11,6 +11,7 @@ import { assertBodyObject } from '../../core/asserts/assert-body-object';
 import { sendPageEvent } from '../../core/tracking/impression/send-page-event';
 import { sendElementEvent } from '../../core/tracking/impression/send-element-event';
 import { getImpressionEvent } from '../../core/tracking/impression/get-event';
+import { assertNavigationType } from '../../core/asserts/assert-navigation-type';
 
 const pageHandler = withErrorHandler(
   async (request: Request, response: Response) => {
@@ -21,6 +22,8 @@ const pageHandler = withErrorHandler(
       'targetType',
       'targetUrl',
     ]);
+
+    assertNavigationType(eventPayload.navigationType);
 
     const accessTokenPayload = request.body
       .accessTokenPayload as AccessTokenPayload;
@@ -42,6 +45,8 @@ const elementHandler = withErrorHandler(
       'targetPageType',
       'targetPageUrl',
     ]);
+
+    assertNavigationType(eventPayload.navigationType);
 
     const accessTokenPayload = request.body
       .accessTokenPayload as AccessTokenPayload;

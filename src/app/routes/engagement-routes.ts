@@ -11,6 +11,7 @@ import { sendClickEvent } from '../../core/tracking/engagement/send-click-event'
 import { getEngagamentEvent } from '../../core/tracking/engagement/get-event';
 import { sendSubmitEvent } from '../../core/tracking/engagement/send-submit-event';
 import { assertBodyObject } from '../../core/asserts/assert-body-object';
+import { assertNavigationType } from '../../core/asserts/assert-navigation-type';
 
 const clickHandler = withErrorHandler(
   async (request: Request, response: Response) => {
@@ -23,6 +24,8 @@ const clickHandler = withErrorHandler(
       'targetPageType',
       'targetPageUrl',
     ]);
+
+    assertNavigationType(eventPayload.navigationType);
 
     const accessTokenPayload = request.body
       .accessTokenPayload as AccessTokenPayload;
@@ -44,6 +47,8 @@ const submitHandler = withErrorHandler(
       'targetPageType',
       'targetPageUrl',
     ]);
+
+    assertNavigationType(eventPayload.navigationType);
 
     const accessTokenPayload = request.body
       .accessTokenPayload as AccessTokenPayload;
