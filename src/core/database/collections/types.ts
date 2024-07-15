@@ -19,7 +19,6 @@ interface Event {
   actor: string;
   date: string;
   ownerId: string;
-  target: Target;
 }
 
-export type { Event, NavigationType };
+export type { Event, NavigationType, Page, Target };

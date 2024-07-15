@@ -5,6 +5,7 @@ import cors from 'cors';
 import { mountUtilityRoutes } from './routes/utility-routes';
 import { mountAuthorizationRoutes } from './routes/authorization-routes';
 import { mountEngagementRoutes } from './routes/engagement-routes';
+import { mountImpressionRoutes } from './routes/impression-routes';
 
 const app = express();
 
@@ -14,5 +15,6 @@ app.use(cors({ origin: true, methods: ['GET', 'POST'] }));
 mountUtilityRoutes(app);
 mountAuthorizationRoutes(app);
 mountEngagementRoutes(app);
+mountImpressionRoutes(app);
 
 export { app };

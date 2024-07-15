@@ -33,7 +33,7 @@ const sendSubmitEvent = async (
     date,
     ownerId: owner.id,
     target: {
-      id: `${owner.username}:element:${targetId}`,
+      id: `${owner.username}:submit:${targetId}`,
       name: targetName,
       page: {
         id: `${owner.username}:page:${targetPageId}`,
