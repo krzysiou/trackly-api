@@ -6,6 +6,7 @@ const {
   DB_CONNECTION_STRING,
   DB_NAME,
   DISABLE_RATE_LIMIT,
+  SESSION_COOKIE_NAME,
 } = process.env;
 
 const getConfig = (): Config => {
@@ -18,6 +19,7 @@ const getConfig = (): Config => {
     port: PORT || '3200',
     tokenSecret: TOKEN_SECRET as string,
     disableRateLimit: DISABLE_RATE_LIMIT === 'true' || false,
+    sessionCookieName: SESSION_COOKIE_NAME || 'session',
     database: databaseConfig,
   };
 

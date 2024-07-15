@@ -8,6 +8,9 @@ import { generateAccessToken } from '../../core/access-token/generate-access-tok
 import { logUserIn } from '../../core/authorization/log-user-in';
 import { signUserIn } from '../../core/authorization/sign-user-in';
 import { publicLimiter } from '../../core/limiters/public-limiter';
+import { getConfig } from '../../../config/config';
+
+const { sessionCookieName } = getConfig();
 
 const loginHandler = withErrorHandler(
   async (request: Request, response: Response) => {
@@ -19,6 +22,7 @@ const loginHandler = withErrorHandler(
     const user = await logUserIn(username, password);
     const accessToken = generateAccessToken(user);
 
+    response.cookie(sessionCookieName, accessToken);
     response.send({ accessToken });
   }
 );
@@ -33,6 +37,7 @@ const registerHandler = withErrorHandler(
     const user = await signUserIn(username, password);
     const accessToken = generateAccessToken(user);
 
+    response.cookie(sessionCookieName, accessToken);
     response.send({ accessToken });
   }
 );
