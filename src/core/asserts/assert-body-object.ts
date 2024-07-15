@@ -1,7 +1,10 @@
 import { AssertionError } from 'assert';
 
-const assertBody = (body: Record<string, string>, fields: string[]) => {
-  const parsedResult: Record<string, string> = {};
+const assertBodyObject = (
+  body: Record<string, Record<string, string>>,
+  fields: string[]
+) => {
+  const parsedResult: Record<string, Record<string, string>> = {};
 
   fields.forEach((field) => {
     if (!body[field]) {
@@ -16,4 +19,4 @@ const assertBody = (body: Record<string, string>, fields: string[]) => {
   return parsedResult;
 };
 
-export { assertBody };
+export { assertBodyObject };
