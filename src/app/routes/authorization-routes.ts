@@ -45,7 +45,7 @@ const registerHandler = withErrorHandler(
 const mountAuthorizationRoutes = (app: Express) => {
   const router = express();
 
-  router.get('/login', loginHandler);
+  router.post('/login', loginHandler);
   router.post('/register', registerHandler);
 
   app.use(publicLimiter);
