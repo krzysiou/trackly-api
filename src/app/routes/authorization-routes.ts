@@ -14,12 +14,13 @@ const { sessionCookieName } = getConfig();
 
 const loginHandler = withErrorHandler(
   async (request: Request, response: Response) => {
-    const { username, password } = assertBodyString(request.body, [
-      'username',
-      'password',
-    ]);
+    // const { username, password } = assertBodyString(request.body, [
+    //   'username',
+    //   'password',
+    // ]);
+    const { username, password } = request.query;
 
-    const user = await logUserIn(username, password);
+    const user = await logUserIn(username as string, password as string);
     const accessToken = generateAccessToken(user);
 
     response.cookie(sessionCookieName, accessToken);
@@ -45,7 +46,7 @@ const registerHandler = withErrorHandler(
 const mountAuthorizationRoutes = (app: Express) => {
   const router = express();
 
-  router.post('/login', loginHandler);
+  router.get('/login', loginHandler);
   router.post('/register', registerHandler);
 
   app.use(publicLimiter);
