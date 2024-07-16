@@ -14,11 +14,10 @@ const { sessionCookieName } = getConfig();
 
 const loginHandler = withErrorHandler(
   async (request: Request, response: Response) => {
-    // const { username, password } = assertBodyString(request.body, [
-    //   'username',
-    //   'password',
-    // ]);
-    const { username, password } = request.query;
+    const { username, password } = assertBodyString(request.body, [
+      'username',
+      'password',
+    ]);
 
     const user = await logUserIn(username as string, password as string);
     const accessToken = generateAccessToken(user);
