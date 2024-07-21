@@ -24,7 +24,10 @@ const registerHandler = withErrorHandler(
     const user = await signUserIn(username, password);
     const accessToken = generateAccessToken(user);
 
-    response.cookie(sessionCookieName, accessToken);
+    response.cookie(sessionCookieName, accessToken, {
+      sameSite: 'none',
+      secure: true,
+    });
     response.send({ accessToken });
   }
 );
@@ -39,7 +42,10 @@ const loginHandler = withErrorHandler(
     const user = await logUserIn(username as string, password as string);
     const accessToken = generateAccessToken(user);
 
-    response.cookie(sessionCookieName, accessToken);
+    response.cookie(sessionCookieName, accessToken, {
+      sameSite: 'none',
+      secure: true,
+    });
     response.send({ accessToken });
   }
 );
