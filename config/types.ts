@@ -6,6 +6,7 @@ type DatabaseConfig = {
 type Config = {
   readonly port: string;
   readonly tokenSecret: string;
+  readonly origin: string;
   readonly disableRateLimit: boolean;
   readonly sessionCookieName: string;
   readonly database: DatabaseConfig;
