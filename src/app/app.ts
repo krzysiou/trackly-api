@@ -13,7 +13,13 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors({ origin: true, methods: ['GET', 'POST'] }));
+app.use(
+  cors({
+    origin: true,
+    methods: ['GET', 'POST'],
+    credentials: true,
+  })
+);
 
 mountUtilityRoutes(app);
 mountAuthorizationRoutes(app);
