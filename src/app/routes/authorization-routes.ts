@@ -8,11 +8,6 @@ import { generateAccessToken } from '../../core/access-token/generate-access-tok
 import { logUserIn } from '../../core/authorization/log-user-in';
 import { signUserIn } from '../../core/authorization/sign-user-in';
 import { publicLimiter } from '../../core/limiters/public-limiter';
-import { getConfig } from '../../../config/config';
-import { checkAccessToken } from '../../core/access-token/check-access-token';
-import { privateLimiter } from '../../core/limiters/private-limtier';
-
-const { sessionCookieName } = getConfig();
 
 const registerHandler = withErrorHandler(
   async (request: Request, response: Response) => {
@@ -24,11 +19,7 @@ const registerHandler = withErrorHandler(
     const user = await signUserIn(username, password);
     const accessToken = generateAccessToken(user);
 
-    response.cookie(sessionCookieName, accessToken, {
-      sameSite: 'none',
-      secure: true,
-    });
-    response.send({ isLoggedIn: true });
+    response.send({ accessToken });
   }
 );
 
@@ -42,28 +33,17 @@ const loginHandler = withErrorHandler(
     const user = await logUserIn(username as string, password as string);
     const accessToken = generateAccessToken(user);
 
-    response.cookie(sessionCookieName, accessToken, {
-      sameSite: 'none',
-      secure: true,
-    });
-    response.send({ isLoggedIn: true });
-  }
-);
-
-const logoutHandler = withErrorHandler(
-  async (request: Request, response: Response) => {
-    response.setHeader('Clear-Site-Data', '"cookies"');
-    response.send({ message: 'Signed out' });
+    response.send({ accessToken });
   }
 );
 
 const mountAuthorizationRoutes = (app: Express) => {
   const router = express();
 
-  router.post('/register', publicLimiter, registerHandler);
-  router.post('/login', publicLimiter, loginHandler);
-  router.post('/logout', privateLimiter, checkAccessToken, logoutHandler);
+  router.post('/register', registerHandler);
+  router.post('/login', loginHandler);
 
+  app.use(publicLimiter);
   app.use(router);
 };
 
