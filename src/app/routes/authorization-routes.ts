@@ -24,7 +24,6 @@ const registerHandler = withErrorHandler(
     const user = await signUserIn(username, password);
     const accessToken = generateAccessToken(user);
 
-    response.setHeader('Access-Control-Expose-Headers', 'Set-Cookie');
     response.cookie(sessionCookieName, accessToken, {
       sameSite: 'none',
       secure: true,
@@ -43,7 +42,6 @@ const loginHandler = withErrorHandler(
     const user = await logUserIn(username as string, password as string);
     const accessToken = generateAccessToken(user);
 
-    response.setHeader('Access-Control-Expose-Headers', 'Set-Cookie');
     response.cookie(sessionCookieName, accessToken, {
       sameSite: 'none',
       secure: true,
