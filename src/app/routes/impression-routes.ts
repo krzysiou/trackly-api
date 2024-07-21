@@ -12,10 +12,12 @@ import { sendPageEvent } from '../../core/tracking/impression/send-page-event';
 import { sendElementEvent } from '../../core/tracking/impression/send-element-event';
 import { getImpressionEvent } from '../../core/tracking/impression/get-event';
 import { assertNavigationType } from '../../core/asserts/assert-navigation-type';
+import { publicLimiter } from '../../core/limiters/public-limiter';
 
 const pageHandler = withErrorHandler(
   async (request: Request, response: Response) => {
     const eventPayload = assertBodyString(request.body, [
+      'applicationId',
       'navigationType',
       'actor',
       'targetId',
@@ -25,10 +27,7 @@ const pageHandler = withErrorHandler(
 
     assertNavigationType(eventPayload.navigationType);
 
-    const accessTokenPayload = request.body
-      .accessTokenPayload as AccessTokenPayload;
-
-    await sendPageEvent(accessTokenPayload, eventPayload);
+    await sendPageEvent(eventPayload);
 
     response.send({ message: 'Event sent successfully' });
   }
@@ -37,6 +36,7 @@ const pageHandler = withErrorHandler(
 const elementHandler = withErrorHandler(
   async (request: Request, response: Response) => {
     const eventPayload = assertBodyString(request.body, [
+      'applicationId',
       'navigationType',
       'actor',
       'targetId',
@@ -48,10 +48,7 @@ const elementHandler = withErrorHandler(
 
     assertNavigationType(eventPayload.navigationType);
 
-    const accessTokenPayload = request.body
-      .accessTokenPayload as AccessTokenPayload;
-
-    await sendElementEvent(accessTokenPayload, eventPayload);
+    await sendElementEvent(eventPayload);
 
     response.send({ message: 'Event sent successfully' });
   }
@@ -59,12 +56,17 @@ const elementHandler = withErrorHandler(
 
 const getHandler = withErrorHandler(
   async (request: Request, response: Response) => {
+    const { applicationId } = assertBodyString(request.body, ['applicationId']);
     const { queryObject } = assertBodyObject(request.body, ['queryObject']);
 
     const accessTokenPayload = request.body
       .accessTokenPayload as AccessTokenPayload;
 
-    const events = await getImpressionEvent(accessTokenPayload, queryObject);
+    const events = await getImpressionEvent(
+      applicationId,
+      queryObject,
+      accessTokenPayload
+    );
 
     response.send({ events });
   }
@@ -73,11 +75,10 @@ const getHandler = withErrorHandler(
 const mountImpressionRoutes = (app: Express) => {
   const router = express();
 
-  router.post('/impression/page', checkAccessToken, pageHandler);
-  router.post('/impression/element', checkAccessToken, elementHandler);
-  router.post('/impression/get', checkAccessToken, getHandler);
+  router.post('/impression/page', publicLimiter, pageHandler);
+  router.post('/impression/element', publicLimiter, elementHandler);
+  router.post('/impression/get', privateLimiter, checkAccessToken, getHandler);
 
-  app.use(privateLimiter);
   app.use(router);
 };
 

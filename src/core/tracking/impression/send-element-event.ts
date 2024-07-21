@@ -1,17 +1,15 @@
 import { v4 as uuid } from 'uuid';
 
 import type { NavigationType } from '../../database/collections/types';
-import type { AccessTokenPayload } from '../../access-token/types';
 import type { ImpressionEvent } from '../../database/collections/impression/types';
 
-import { getfromUsers } from '../../database/collections/users/get-from-users';
 import { saveInImpression } from '../../database/collections/impression/save-in-impression';
+import { getfromApplications } from '../../database/collections/applications/get-from-applications';
+import { NotFoundError } from '../../errors/notfound-error';
 
-const sendElementEvent = async (
-  accessTokenPayload: AccessTokenPayload,
-  eventPayload: Record<string, string>
-) => {
+const sendElementEvent = async (eventPayload: Record<string, string>) => {
   const {
+    applicationId,
     navigationType,
     actor,
     targetId,
@@ -20,30 +18,35 @@ const sendElementEvent = async (
     targetPageType,
     targetPageUrl,
   } = eventPayload;
+  try {
+    const application = (await getfromApplications({ id: applicationId }))[0];
+    const date = new Date().toLocaleString();
 
-  const owner = (await getfromUsers({ id: accessTokenPayload.id }))[0];
-  const date = new Date().toLocaleString();
-
-  const engagementEvent: ImpressionEvent = {
-    id: uuid(),
-    type: 'Impression',
-    action: 'view',
-    navigationType: navigationType as NavigationType,
-    actor,
-    date,
-    ownerId: owner.id,
-    target: {
-      id: `${owner.username}:element:${targetId}`,
-      name: targetName,
-      page: {
-        id: `${owner.username}:page:${targetPageId}`,
-        type: targetPageType,
-        url: targetPageUrl,
+    const engagementEvent: ImpressionEvent = {
+      id: uuid(),
+      type: 'Impression',
+      action: 'view',
+      navigationType: navigationType as NavigationType,
+      actor,
+      date,
+      applicationId: application.id,
+      target: {
+        id: `${application.name}:element:${targetId}`,
+        name: targetName,
+        page: {
+          id: `${application.name}:page:${targetPageId}`,
+          type: targetPageType,
+          url: targetPageUrl,
+        },
       },
-    },
-  };
+    };
 
-  await saveInImpression(engagementEvent);
+    await saveInImpression(engagementEvent);
+  } catch {
+    throw new NotFoundError({
+      message: `Application not found`,
+    });
+  }
 };
 
 export { sendElementEvent };

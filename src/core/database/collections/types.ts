@@ -18,7 +18,7 @@ interface Event {
   navigationType: NavigationType;
   actor: string;
   date: string;
-  ownerId: string;
+  applicationId: string;
 }
 
 export type { Event, NavigationType, Page, Target };

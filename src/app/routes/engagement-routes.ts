@@ -12,10 +12,12 @@ import { getEngagamentEvent } from '../../core/tracking/engagement/get-event';
 import { sendSubmitEvent } from '../../core/tracking/engagement/send-submit-event';
 import { assertBodyObject } from '../../core/asserts/assert-body-object';
 import { assertNavigationType } from '../../core/asserts/assert-navigation-type';
+import { publicLimiter } from '../../core/limiters/public-limiter';
 
 const clickHandler = withErrorHandler(
   async (request: Request, response: Response) => {
     const eventPayload = assertBodyString(request.body, [
+      'applicationId',
       'navigationType',
       'actor',
       'targetId',
@@ -27,10 +29,7 @@ const clickHandler = withErrorHandler(
 
     assertNavigationType(eventPayload.navigationType);
 
-    const accessTokenPayload = request.body
-      .accessTokenPayload as AccessTokenPayload;
-
-    await sendClickEvent(accessTokenPayload, eventPayload);
+    await sendClickEvent(eventPayload);
 
     response.send({ message: 'Event sent successfully' });
   }
@@ -39,6 +38,7 @@ const clickHandler = withErrorHandler(
 const submitHandler = withErrorHandler(
   async (request: Request, response: Response) => {
     const eventPayload = assertBodyString(request.body, [
+      'applicationId',
       'navigationType',
       'actor',
       'targetId',
@@ -50,10 +50,7 @@ const submitHandler = withErrorHandler(
 
     assertNavigationType(eventPayload.navigationType);
 
-    const accessTokenPayload = request.body
-      .accessTokenPayload as AccessTokenPayload;
-
-    await sendSubmitEvent(accessTokenPayload, eventPayload);
+    await sendSubmitEvent(eventPayload);
 
     response.send({ message: 'Event sent successfully' });
   }
@@ -61,12 +58,17 @@ const submitHandler = withErrorHandler(
 
 const getHandler = withErrorHandler(
   async (request: Request, response: Response) => {
+    const { applicationId } = assertBodyString(request.body, ['applicationId']);
     const { queryObject } = assertBodyObject(request.body, ['queryObject']);
 
     const accessTokenPayload = request.body
       .accessTokenPayload as AccessTokenPayload;
 
-    const events = await getEngagamentEvent(accessTokenPayload, queryObject);
+    const events = await getEngagamentEvent(
+      applicationId,
+      queryObject,
+      accessTokenPayload
+    );
 
     response.send({ events });
   }
@@ -75,11 +77,10 @@ const getHandler = withErrorHandler(
 const mountEngagementRoutes = (app: Express) => {
   const router = express();
 
-  router.post('/engagement/click', checkAccessToken, clickHandler);
-  router.post('/engagement/submit', checkAccessToken, submitHandler);
-  router.post('/engagement/get', checkAccessToken, getHandler);
+  router.post('/engagement/click', publicLimiter, clickHandler);
+  router.post('/engagement/submit', publicLimiter, submitHandler);
+  router.post('/engagement/get', privateLimiter, checkAccessToken, getHandler);
 
-  app.use(privateLimiter);
   app.use(router);
 };
 

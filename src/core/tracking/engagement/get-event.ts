@@ -1,16 +1,26 @@
 import type { Document, Filter } from 'mongodb';
 import type { AccessTokenPayload } from '../../access-token/types';
 
-import { getfromUsers } from '../../database/collections/users/get-from-users';
 import { getFromEngagement } from '../../database/collections/engagement/get-from-engagement';
+import { getAllApplications } from '../../application/get-all-applications.1';
+import { AuthorizationError } from '../../errors/authorization-error';
 
 const getEngagamentEvent = async (
-  accessTokenPayload: AccessTokenPayload,
-  queryObject: Filter<Document>
+  applicationId: string,
+  queryObject: Filter<Document>,
+  accessTokenPayload: AccessTokenPayload
 ) => {
-  const owner = (await getfromUsers({ id: accessTokenPayload.id }))[0];
+  const applications = await getAllApplications(accessTokenPayload);
 
-  return await getFromEngagement({ ...queryObject, ownerId: owner.id });
+  const belongsToUser = applications.find(({ id }) => id === applicationId);
+
+  if (!belongsToUser) {
+    throw new AuthorizationError({
+      message: 'You are not authorized to view this content',
+    });
+  }
+
+  return await getFromEngagement({ ...queryObject, applicationId });
 };
 
 export { getEngagamentEvent };
