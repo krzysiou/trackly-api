@@ -27,6 +27,7 @@ const registerHandler = withErrorHandler(
     response.cookie(sessionCookieName, accessToken, {
       sameSite: 'none',
       secure: true,
+      httpOnly: false,
     });
     response.send({ accessToken });
   }
@@ -45,6 +46,7 @@ const loginHandler = withErrorHandler(
     response.cookie(sessionCookieName, accessToken, {
       sameSite: 'none',
       secure: true,
+      httpOnly: false,
     });
     response.send({ accessToken });
   }
