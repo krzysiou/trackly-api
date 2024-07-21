@@ -28,7 +28,7 @@ const registerHandler = withErrorHandler(
       sameSite: 'none',
       secure: true,
     });
-    response.send({ accessToken });
+    response.send({ isLoggedIn: true });
   }
 );
 
@@ -46,7 +46,7 @@ const loginHandler = withErrorHandler(
       sameSite: 'none',
       secure: true,
     });
-    response.send({ accessToken });
+    response.send({ isLoggedIn: true });
   }
 );
 
