@@ -68,7 +68,7 @@ const getHandler = withErrorHandler(
       accessTokenPayload
     );
 
-    response.send({ events });
+    response.send([...events]);
   }
 );
 

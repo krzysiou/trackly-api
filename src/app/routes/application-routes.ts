@@ -33,7 +33,7 @@ const allHandler = withErrorHandler(
 
     const applications = await getAllApplications(accessTokenPayload);
 
-    response.send({ applications });
+    response.send([...applications]);
   }
 );
 
@@ -49,7 +49,7 @@ const getHandler = withErrorHandler(
       id as string
     );
 
-    response.send({ application });
+    response.send({ ...application });
   }
 );
 
