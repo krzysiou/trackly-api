@@ -12,7 +12,7 @@ const {
 
 const getConfig = (): Config => {
   const databaseConfig: DatabaseConfig = {
-    databaseName: DB_NAME || 'trackly_db',
+    databaseName: DB_NAME || 'Trackly',
     databaseConnectionString: DB_CONNECTION_STRING as string,
   };
 
