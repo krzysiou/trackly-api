@@ -17,8 +17,13 @@ interface Event {
   type: 'Engagement' | 'Impression';
   navigationType: NavigationType;
   actor: string;
-  date: string;
+  date: Date;
   applicationId: string;
 }
 
-export type { Event, NavigationType, Page, Target };
+type PaginationOptions = {
+  page: number;
+  limit: number;
+};
+
+export type { Event, NavigationType, Page, Target, PaginationOptions };

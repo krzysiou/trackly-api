@@ -20,7 +20,7 @@ const sendElementEvent = async (eventPayload: Record<string, string>) => {
   } = eventPayload;
   try {
     const application = (await getfromApplications({ id: applicationId }))[0];
-    const date = new Date().toLocaleString();
+    const date = new Date();
 
     const engagementEvent: ImpressionEvent = {
       id: uuid(),

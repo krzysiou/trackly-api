@@ -21,7 +21,7 @@ const sendClickEvent = async (eventPayload: Record<string, string>) => {
 
   try {
     const application = (await getfromApplications({ id: applicationId }))[0];
-    const date = new Date().toLocaleString();
+    const date = new Date();
 
     const engagementEvent: EngagementEvent = {
       id: uuid(),
@@ -32,7 +32,7 @@ const sendClickEvent = async (eventPayload: Record<string, string>) => {
       date,
       applicationId: application.id,
       target: {
-        id: `${application.name}:click:${targetId}`,
+        id: `${application.name}:element:${targetId}`,
         name: targetName,
         page: {
           id: `${application.name}:page:${targetPageId}`,

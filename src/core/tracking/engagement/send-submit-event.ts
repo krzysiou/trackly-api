@@ -20,7 +20,7 @@ const sendSubmitEvent = async (eventPayload: Record<string, string>) => {
   } = eventPayload;
   try {
     const application = (await getfromApplications({ id: applicationId }))[0];
-    const date = new Date().toLocaleString();
+    const date = new Date();
 
     const engagementEvent: EngagementEvent = {
       id: uuid(),
@@ -31,7 +31,7 @@ const sendSubmitEvent = async (eventPayload: Record<string, string>) => {
       date,
       applicationId: application.id,
       target: {
-        id: `${application.name}:submit:${targetId}`,
+        id: `${application.name}:element:${targetId}`,
         name: targetName,
         page: {
           id: `${application.name}:page:${targetPageId}`,

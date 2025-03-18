@@ -1,5 +1,6 @@
 import type { Document, Filter } from 'mongodb';
 import type { AccessTokenPayload } from '../../access-token/types';
+import type { PaginationOptions } from '../../database/collections/types';
 
 import { getFromImpression } from '../../database/collections/impression/get-from-impression';
 import { getAllApplications } from '../../application/get-all-applications.1';
@@ -8,6 +9,7 @@ import { AuthorizationError } from '../../errors/authorization-error';
 const getImpressionEvent = async (
   applicationId: string,
   queryObject: Filter<Document>,
+  paginationOptions: PaginationOptions,
   accessTokenPayload: AccessTokenPayload
 ) => {
   const applications = await getAllApplications(accessTokenPayload);
@@ -20,7 +22,10 @@ const getImpressionEvent = async (
     });
   }
 
-  return await getFromImpression({ ...queryObject, applicationId });
+  return await getFromImpression(
+    { ...queryObject, applicationId },
+    paginationOptions
+  );
 };
 
 export { getImpressionEvent };

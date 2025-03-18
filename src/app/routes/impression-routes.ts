@@ -58,6 +58,7 @@ const getHandler = withErrorHandler(
   async (request: Request, response: Response) => {
     const { applicationId } = assertBodyString(request.body, ['applicationId']);
     const { queryObject } = assertBodyObject(request.body, ['queryObject']);
+    const { page = 1, limit = 10 } = request.query;
 
     const accessTokenPayload = request.body
       .accessTokenPayload as AccessTokenPayload;
@@ -65,6 +66,7 @@ const getHandler = withErrorHandler(
     const events = await getImpressionEvent(
       applicationId,
       queryObject,
+      { page: Number(page), limit: Number(limit) },
       accessTokenPayload
     );
 
