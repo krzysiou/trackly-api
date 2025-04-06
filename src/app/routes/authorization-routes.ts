@@ -19,7 +19,7 @@ const registerHandler = withErrorHandler(
     const user = await signUserIn(username, password);
     const accessToken = generateAccessToken(user);
 
-    response.send({ accessToken });
+    response.send({ accessToken, userId: user.id });
   }
 );
 
@@ -33,7 +33,7 @@ const loginHandler = withErrorHandler(
     const user = await logUserIn(username as string, password as string);
     const accessToken = generateAccessToken(user);
 
-    response.send({ accessToken });
+    response.send({ accessToken, userId: user.id });
   }
 );
 
